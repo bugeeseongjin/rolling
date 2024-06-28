@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('container');
   const videos = document.querySelectorAll('.video');
   
-  // 첫 번째 동영상 자동 재생
-  if (videos.length > 0) {
-    videos[0].play();
-  }
+  // 모든 비디오 미리 재생 (브라우저 정책에 따라 autoplay가 작동하도록)
+  videos.forEach(video => {
+    video.play().catch(() => {});
+  });
 
   // 동영상 스크롤 감지 및 재생 제어
   container.addEventListener('scroll', () => {
