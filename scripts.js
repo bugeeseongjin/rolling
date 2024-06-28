@@ -11,16 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentVideo && currentVideo !== video) {
         currentVideo.pause();
         currentVideo.currentTime = 0; // 처음부터 재생
+        currentVideo.muted = true; // 이전 동영상은 음소거
       }
 
       // 클릭한 동영상 재생/일시정지
       if (video.paused) {
+        video.muted = false; // 음소거 해제
         video.play().catch(error => {
           console.error("동영상 재생에 실패했습니다:", error);
         });
         currentVideo = video;
       } else {
         video.pause();
+        video.muted = true; // 재생 중지 시 음소거
       }
     });
 
