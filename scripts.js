@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const videos = document.querySelectorAll('.video');
   let currentVideo = null;
 
-  // 동영상 클릭 시 재생 제어
+  // 동영상 클릭 시 재생/일시정지 제어
   videos.forEach((video, index) => {
     video.addEventListener('click', () => {
       // 현재 재생 중인 동영상 정지
@@ -13,9 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
         currentVideo.currentTime = 0; // 처음부터 재생
       }
 
-      // 클릭한 동영상 재생
+      // 클릭한 동영상 재생/일시정지
       if (video.paused) {
-        video.play();
+        video.play().catch(error => {
+          console.error("동영상 재생에 실패했습니다:", error);
+        });
         currentVideo = video;
       } else {
         video.pause();
