@@ -2,22 +2,42 @@
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('container');
   const videos = document.querySelectorAll('.video');
-  
-  // 모든 비디오 미리 재생 (브라우저 정책에 따라 autoplay가 작동하도록)
-  videos.forEach(video => {
-    video.play().catch(() => {});
+  let currentVideo = null;
+
+  // 동영상 클릭 시 재생 제어
+  videos.forEach((video, index) => {
+    video.addEventListener('click', () => {
+      // 현재 재생 중인 동영상 정지
+      if (currentVideo && currentVideo !== video) {
+        currentVideo.pause();
+        currentVideo.currentTime = 0; // 처음부터 재생
+      }
+
+      // 클릭한 동영상 재생
+      if (video.paused) {
+        video.play();
+        currentVideo = video;
+      } else {
+        video.pause();
+      }
+    });
+
+    // 동영상 종료 시 다음 동영상으로 스크롤
+    video.addEventListener('ended', () => {
+      const nextVideo = videos[index + 1];
+      if (nextVideo) {
+        nextVideo.closest('.video-container').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
   });
 
-  // 동영상 스크롤 감지 및 재생 제어
+  // 스크롤 제어
   container.addEventListener('scroll', () => {
     let currentVideoIndex = -1;
     videos.forEach((video, index) => {
       const rect = video.getBoundingClientRect();
       if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
         currentVideoIndex = index;
-        video.play();
-      } else {
-        video.pause();
       }
     });
 
@@ -34,16 +54,5 @@ document.addEventListener('DOMContentLoaded', () => {
         container.scrollTop = maxScrollTop - 1;
       }
     }
-  });
-
-  // 동영상 종료 시 다음 동영상으로 스크롤
-  videos.forEach((video, index) => {
-    video.addEventListener('ended', () => {
-      const nextVideo = videos[index + 1];
-      if (nextVideo) {
-        nextVideo.closest('.video-container').scrollIntoView({ behavior: 'smooth' });
-        nextVideo.play();
-      }
-    });
   });
 });
